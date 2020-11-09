@@ -4,7 +4,7 @@ import LightOnOff from './LightOnOff/LightOnOff';
 
 const assembly = (props) => {
     return <div className={styles.assembly}>
-                {props.lightsArr.map(() => <LightOnOff />)}
+                {props.lightsArr.map((light) => <LightOnOff click={(event) => props.clicked(event, light.id)}/>)}
            </div>
 }
 
