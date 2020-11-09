@@ -4,4 +4,7 @@
     height: 300px;
     margin: 2rem auto;
     flex-flow: row wrap;
+    justify-content: center;
+    align-content: center;
+    background-color: rgb(28, 28, 28);
 }
