@@ -2,8 +2,14 @@ import React from 'react';
 import styles from './LightOnOff.module.css';
 
 const lightOnOff = (props) => {
-    return (<div className={styles.light}>
-                <button onClick={props.click}></button>
+    const style = [styles.light];
+    if(!props.isLight) {
+        style.push('false');
+    } else {
+        style.push(styles.true);
+    }
+    return (<div onClick={props.click} className={style.join(' ')}>
+                
            </div>
            );
 }
