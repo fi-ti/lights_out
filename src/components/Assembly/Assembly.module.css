@@ -1,6 +1,7 @@
 .assembly {
     display: flex;
     margin: 2rem auto;
+    text-align: center;
     flex-flow: row wrap;
     box-shadow: 1px 1px 12px 4px rgb(252, 81, 238);
     justify-content: center;

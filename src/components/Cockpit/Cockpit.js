@@ -3,13 +3,13 @@ import styles from './Cockpit.module.css';
 
 const cockpit = (props) => {
     return <div className={styles.cockpit}>
-                <div>
+                <div className={styles.playRules}>
                     <button className={styles.playRulesBtn} onClick={props.howToPlay}>How to play ?</button> 
                 </div>
-                <div>
-                    <p className={styles.title}>{props.title}</p>
+                <div className={styles.title}>
+                    <p className={styles.titleBtn}>{props.title}</p>
                 </div>
-                <div>
+                <div className={styles.restart}>
                     <button className={styles.restartBtn} onClick={props.restart}>Restart</button>
                 </div>
            </div>
