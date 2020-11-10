@@ -142,6 +142,7 @@ class App extends Component {
 
   closeWinDialog = () => {
           this.setState({ haveWon: false });
+          this.restart();
   }
 
   render() {
