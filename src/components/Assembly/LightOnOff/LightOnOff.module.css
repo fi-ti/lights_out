@@ -1,7 +1,7 @@
 .light {
-    width: 32.5%;
+    width: 90px;
     margin: 0.5px;
-    height: 32.5%;  
+    height: 90px;  
 }
 
 .true {
@@ -11,3 +11,4 @@
 .false {
     background-color: rgb(0, 0, 0);
 }
+

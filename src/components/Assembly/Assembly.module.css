@@ -1,10 +1,24 @@
 .assembly {
     display: flex;
-    width: 300px;
-    height: 300px;
     margin: 2rem auto;
     flex-flow: row wrap;
+    box-shadow: 1px 1px 12px 4px rgb(252, 81, 238);
     justify-content: center;
     align-content: center;
     background-color: rgb(28, 28, 28);
+}
+
+.three {
+    width: 275px;
+    height: 275x;
+}
+
+.four {
+    width: 365px;
+    height: 365x;
+}
+
+.five {
+    width: 455px;
+    height: 455x;
 }

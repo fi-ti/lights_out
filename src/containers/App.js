@@ -5,16 +5,63 @@ import Assembly from '../components/Assembly/Assembly';
 
 class App extends Component {
 
-  state = {
-    lights: [{ isLight: false, id: '00', coordinates: [0, 0] },{ isLight: true, id: '01', coordinates: [0, 1] },
-             { isLight: true, id: '02', coordinates: [0, 2]},{ isLight: true, id: '10', coordinates: [1, 0]},
-             { isLight: true, id: '11', coordinates: [1, 1]},{ isLight: false, id: '12', coordinates: [1, 2]},
-             { isLight: false, id: '20', coordinates: [2, 0] },{ isLight: true, id: '21', coordinates: [2, 1] },
-             { isLight: false, id: '22', coordinates: [2, 2] } ]
-  };
+        constructor(props) {
+                super(props);
 
+                const lightsArr = [];
+                const squareLen = this.props.squareLength;
+
+                    for(let i = 0; i < squareLen; i++) {
+                        for(let j = 0; j < squareLen; j++) {
+                                lightsArr.push({ 
+                                                isLight: (Math.random() > 0.5 ? true : false ), 
+                                                id: `${i}${j}`, 
+                                                coordinates: [i, j]
+                                               });
+                                }
+                        }
+                this.state = {
+                        lights: lightsArr,
+                        squareLength: this.props.squareLength
+                };                            
+        }
+
+//   state = {
+//      lights:    []        //[{ isLight: false, id: '00', coordinates: [0, 0] },{ isLight: true, id: '01', coordinates: [0, 1] },
+//            { isLight: true, id: '02', coordinates: [0, 2]},{ isLight: true, id: '10', coordinates: [1, 0]},
+//               { isLight: true, id: '11', coordinates: [1, 1]},{ isLight: false, id: '12', coordinates: [1, 2]},
+//               { isLight: false, id: '20', coordinates: [2, 0] },{ isLight: true, id: '21', coordinates: [2, 1] },
+//               { isLight: false, id: '22', coordinates: [2, 2] } ]
+//   };
+
+//   //initializing state;
+//   initState = () => {
+//         const squareLen = this.props.squareLength;
+//         for(let i = 0; i < squareLen; i++) {
+//                 for(let j = 0; j < squareLen; j++) {
+//                         lightsArr.push({ isLight: (Math.random() > 0.5 ? true : false ), id: `${i}${j}`, coordinates: [i, j]});
+//                 }
+//         }
+//   }
+  deleteLeft = (arr, row, column) => {
+        arr.push([row, column - 1].join(''));
+  }
+  
+  deleteRight = (arr, row, column) => {
+        arr.push([row, column + 1].join(''));
+  }
+  
+  deleteUp = (arr, row, column) => {
+        arr.push([row - 1, column].join(''));
+  }
+  
+  deleteDown = (arr, row, column) => {
+        arr.push([row + 1, column].join(''));
+  }
+ 
   lightHandler = (event, id, coordinates) => {
     // Light on Off.
+    console.log("id: ", id,"coordinates: ", coordinates);
     const lightArr = [...this.state.lights];
     const indexOfLight = lightArr.findIndex((light) => id === light.id);
     const doesLight = this.state.lights[indexOfLight].isLight;
@@ -22,68 +69,68 @@ class App extends Component {
     lightArr[indexOfLight].isLight = !doesLight;
     this.setState({ lights: lightArr });
     
+    
     // Adjacent Lights on off.
     const lightArr02 = [...this.state.lights];
-    //
+    const criticalLen = this.state.squareLength - 1;
     const arr = [];
-    switch(coordinates[0]) {
-      case 0: switch(coordinates[1]) {
-                case 0: arr.push([coordinates[0] + 1, coordinates[1]].join(''));
-                        arr.push([coordinates[0], coordinates[1] + 1].join(''));
-                        break;
+    // Player moves.
+    const row = coordinates[0];
+    const column = coordinates[1];
 
-                case 1: arr.push([coordinates[0] + 1, coordinates[1]].join(''));
-                        arr.push([coordinates[0], coordinates[1] - 1].join(''));
-                        arr.push([coordinates[0], coordinates[1] + 1].join(''));
-                        break;
+    switch(row) {
 
-                case 2: arr.push([coordinates[0] + 1, coordinates[1]].join(''));
-                        arr.push([coordinates[0], coordinates[1] - 1].join(''));
-                        break;                        
+      case 0:   this.deleteDown(arr, row, column);
                         
-      };
-      break;
-
-      case 1: switch(coordinates[1]) {
-                case 0: arr.push([coordinates[0] - 1, coordinates[1]].join(''));
-                        arr.push([coordinates[0] + 1, coordinates[1]].join(''));
-                        arr.push([coordinates[0] - 1, coordinates[1] + 1].join(''));
-                        break;
-
-                case 1: arr.push([coordinates[0] + 1, coordinates[1]].join(''));
-                        arr.push([coordinates[0], coordinates[1] - 1].join(''));
-                        arr.push([coordinates[0], coordinates[1] + 1].join(''));
-                        arr.push([coordinates[0] - 1, coordinates[1]].join(''));
-                        break;
-
-                case 2: arr.push([coordinates[0] + 1, coordinates[1]].join(''));
-                        arr.push([coordinates[0] - 1, coordinates[1]].join(''));
-                        arr.push([coordinates[0], coordinates[1] - 1].join(''));
-                        break;                        
+                switch(column) {
                 
-      };
-      break;
+                        case 0: this.deleteRight(arr, row, column);
+                                break;
 
-      case 2: switch(coordinates[1]) {
-                case 0: arr.push([coordinates[0] - 1, coordinates[1]].join(''));
-                        arr.push([coordinates[0], coordinates[1] + 1].join(''));
-                        break;
+                        case criticalLen: this.deleteLeft(arr, row, column);
+                                        break;
 
-                case 1: arr.push([coordinates[0] - 1, coordinates[1]].join(''));
-                        arr.push([coordinates[0], coordinates[1] - 1].join(''));
-                        arr.push([coordinates[0], coordinates[1] + 1].join(''));
-                        break;
+                        default: this.deleteRight(arr, row, column);
+                                 this.deleteLeft(arr, row, column);
+                                 break;
+                };
+                break;
 
-                case 2: arr.push([coordinates[0] - 1, coordinates[1]].join(''));
-                        arr.push([coordinates[0], coordinates[1] - 1].join(''));
-                        break;                        
+      case criticalLen: this.deleteUp(arr, row, column); 
+                switch(column) {
+                        case 0: this.deleteRight(arr, row, column);
+                                break;
+
+                        case criticalLen: this.deleteLeft(arr, row, column);
+                                        break;
                 
-      };
-      break;
+                        default: this.deleteLeft(arr, row, column);
+                                 this.deleteRight(arr, row, column);
+                                 break;                        
+                        
+                };
+                break;
+
+      default:  this.deleteDown(arr, row, column);
+                this.deleteUp(arr, row, column);
+                switch(column) {
+
+                case 0: this.deleteRight(arr, row, column);
+                        break;
+
+                case criticalLen: this.deleteLeft(arr, row, column); 
+                               break;
+
+                default: this.deleteLeft(arr, row, column);
+                         this.deleteRight(arr, row, column);
+                         break;                        
+                
+                };
+                break;
     }
     
     //
-
+    console.log('[App.js] arr: ', arr);
     arr.map(el => {
     
       let doLight;
@@ -101,7 +148,7 @@ class App extends Component {
     return (
        <div className="App">
           <Cockpit title={this.props.appTitle}/>
-          <Assembly lightsArr={this.state.lights} clicked={this.lightHandler}/>
+          <Assembly squareLen={this.props.squareLength}lightsArr={this.state.lights} clicked={this.lightHandler}/>
        </div>
        );
   }
