@@ -17,6 +17,10 @@
     height: 50px;
     width: 200px;
     padding: 8px;
+    color: rgb(155, 155, 0);
+    border: none;
+    background-color: black;
+    outline: none;
 }
 
 .title {
@@ -31,4 +35,15 @@
     height: 50px;
     width: 150px;
     padding: 8px;
+    background-color: black;
+    color: rgb(155, 155, 0);
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
 }
+
+.restartBtn:hover {
+    transform: scale(1.2);
+}
+

@@ -16,8 +16,7 @@ const assembly = (props) => {
     
     return <div className={style.join(' ')} id="four">
                 {   props.lightsArr.map((light) => <LightOnOff isLight={light.isLight} 
-                                                               
-                                                               click={(event) => props.clicked(event, light.id, light.coordinates)}/>)}
+                                                               click={(event) => props.clicked(event, light.id, light.coordinates)}/>) }
            </div>
 }
 

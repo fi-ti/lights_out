@@ -2,6 +2,7 @@ import './App.css';
 import React, { Component } from 'react';
 import Cockpit from '../components/Cockpit/Cockpit';
 import Assembly from '../components/Assembly/Assembly';
+import HowToPlay from '../components/Cockpit/HowToPlay';
 
 class App extends Component {
 
@@ -22,133 +23,122 @@ class App extends Component {
                         }
                 this.state = {
                         lights: lightsArr,
-                        squareLength: this.props.squareLength
+                        squareLength: this.props.squareLength,
+                        isHowToPlay: false
                 };                            
         }
 
-//   state = {
-//      lights:    []        //[{ isLight: false, id: '00', coordinates: [0, 0] },{ isLight: true, id: '01', coordinates: [0, 1] },
-//            { isLight: true, id: '02', coordinates: [0, 2]},{ isLight: true, id: '10', coordinates: [1, 0]},
-//               { isLight: true, id: '11', coordinates: [1, 1]},{ isLight: false, id: '12', coordinates: [1, 2]},
-//               { isLight: false, id: '20', coordinates: [2, 0] },{ isLight: true, id: '21', coordinates: [2, 1] },
-//               { isLight: false, id: '22', coordinates: [2, 2] } ]
-//   };
-
-//   //initializing state;
-//   initState = () => {
-//         const squareLen = this.props.squareLength;
-//         for(let i = 0; i < squareLen; i++) {
-//                 for(let j = 0; j < squareLen; j++) {
-//                         lightsArr.push({ isLight: (Math.random() > 0.5 ? true : false ), id: `${i}${j}`, coordinates: [i, j]});
-//                 }
-//         }
-//   }
-  deleteLeft = (arr, row, column) => {
-        arr.push([row, column - 1].join(''));
+  deleteLeft = (changeLightsArr, row, col) => {
+        changeLightsArr.push([row, col - 1].join(''));
   }
   
-  deleteRight = (arr, row, column) => {
-        arr.push([row, column + 1].join(''));
+  deleteRight = (changeLightsArr, row, col) => {
+        changeLightsArr.push([row, col + 1].join(''));
   }
   
-  deleteUp = (arr, row, column) => {
-        arr.push([row - 1, column].join(''));
+  deleteUp = (changeLightsArr, row, col) => {
+        changeLightsArr.push([row - 1, col].join(''));
   }
   
-  deleteDown = (arr, row, column) => {
-        arr.push([row + 1, column].join(''));
+  deleteDown = (changeLightsArr, row, col) => {
+        changeLightsArr.push([row + 1, col].join(''));
   }
  
   lightHandler = (event, id, coordinates) => {
-    // Light on Off.
-    console.log("id: ", id,"coordinates: ", coordinates);
-    const lightArr = [...this.state.lights];
-    const indexOfLight = lightArr.findIndex((light) => id === light.id);
-    const doesLight = this.state.lights[indexOfLight].isLight;
-
-    lightArr[indexOfLight].isLight = !doesLight;
-    this.setState({ lights: lightArr });
-    
-    
-    // Adjacent Lights on off.
-    const lightArr02 = [...this.state.lights];
-    const criticalLen = this.state.squareLength - 1;
-    const arr = [];
-    // Player moves.
+  
+    const lightsArr = [...this.state.lights];
+    const criticalLength = this.state.squareLength - 1;
+    const changeLightsArr = [];
     const row = coordinates[0];
-    const column = coordinates[1];
-
+    const col = coordinates[1];
+    
+    // Logic for determing which lights to turn on or off.
+    changeLightsArr.push([row, col].join(''));
     switch(row) {
 
-      case 0:   this.deleteDown(arr, row, column);
+      case 0:   this.deleteDown(changeLightsArr, row, col);
                         
-                switch(column) {
+                switch(col) {
                 
-                        case 0: this.deleteRight(arr, row, column);
+                        case 0: this.deleteRight(changeLightsArr, row, col);
                                 break;
 
-                        case criticalLen: this.deleteLeft(arr, row, column);
+                        case criticalLength: this.deleteLeft(changeLightsArr, row, col);
                                         break;
 
-                        default: this.deleteRight(arr, row, column);
-                                 this.deleteLeft(arr, row, column);
+                        default: this.deleteRight(changeLightsArr, row, col);
+                                 this.deleteLeft(changeLightsArr, row, col);
                                  break;
                 };
                 break;
 
-      case criticalLen: this.deleteUp(arr, row, column); 
-                switch(column) {
-                        case 0: this.deleteRight(arr, row, column);
+      case criticalLength: this.deleteUp(changeLightsArr, row, col); 
+                switch(col) {
+                        case 0: this.deleteRight(changeLightsArr, row, col);
                                 break;
 
-                        case criticalLen: this.deleteLeft(arr, row, column);
+                        case criticalLength: this.deleteLeft(changeLightsArr, row, col);
                                         break;
                 
-                        default: this.deleteLeft(arr, row, column);
-                                 this.deleteRight(arr, row, column);
+                        default: this.deleteLeft(changeLightsArr, row, col);
+                                 this.deleteRight(changeLightsArr, row, col);
                                  break;                        
                         
                 };
                 break;
 
-      default:  this.deleteDown(arr, row, column);
-                this.deleteUp(arr, row, column);
-                switch(column) {
+      default:  this.deleteDown(changeLightsArr, row, col);
+                this.deleteUp(changeLightsArr, row, col);
+                switch(col) {
 
-                case 0: this.deleteRight(arr, row, column);
+                case 0: this.deleteRight(changeLightsArr, row, col);
                         break;
 
-                case criticalLen: this.deleteLeft(arr, row, column); 
+                case criticalLength: this.deleteLeft(changeLightsArr, row, col); 
                                break;
 
-                default: this.deleteLeft(arr, row, column);
-                         this.deleteRight(arr, row, column);
+                default: this.deleteLeft(changeLightsArr, row, col);
+                         this.deleteRight(changeLightsArr, row, col);
                          break;                        
                 
                 };
                 break;
     }
     
-    //
-    console.log('[App.js] arr: ', arr);
-    arr.map(el => {
-    
-      let doLight;
-      const index = lightArr02.findIndex(light => el == light.id);
-      doLight = this.state.lights[index].isLight;
-      lightArr02[index].isLight = !doLight;
+    // Turn the selected lights off.
+    changeLightsArr.map(el => {
+      let doesLight;
+      const index = lightsArr.findIndex(light => el === light.id);
+      doesLight = this.state.lights[index].isLight;
+      lightsArr[index].isLight = !doesLight;
       return 0;
     });
 
-    this.setState({ lights: lightArr02 });
+    this.setState({ lights: lightsArr });
 
+  }
+
+  restart = () => {
+          const lightsArr = [...this.state.lights];
+          lightsArr.forEach(light => Math.random() > 0.5 ? light.isLight = true : light.isLight = false);
+          this.setState({ lights: lightsArr });
+  }
+
+  howToPlay = () => {
+        this.setState((prevState, props) => { return { isHowToPlay: !prevState.isHowToPlay }});
+        
   }
 
   render() {
     return (
        <div className="App">
-          <Cockpit title={this.props.appTitle}/>
-          <Assembly squareLen={this.props.squareLength}lightsArr={this.state.lights} clicked={this.lightHandler}/>
+          <Cockpit title={this.props.appTitle}
+                   restart={this.restart}
+                   howToPlay={this.howToPlay}/>
+          <Assembly squareLen={this.props.squareLength} 
+                    lightsArr={this.state.lights} 
+                    clicked={this.lightHandler}/>
+           { this.state.isHowToPlay ? <HowToPlay close={this.howToPlay}/> : null } 
        </div>
        );
   }
