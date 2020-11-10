@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Cockpit from '../components/Cockpit/Cockpit';
 import Assembly from '../components/Assembly/Assembly';
 import HowToPlay from '../components/Cockpit/HowToPlay';
+import YouWin from '../components/YouWin/YouWin';
 
 class App extends Component {
 
@@ -24,7 +25,8 @@ class App extends Component {
                 this.state = {
                         lights: lightsArr,
                         squareLength: this.props.squareLength,
-                        isHowToPlay: false
+                        isHowToPlay: false,
+                        haveWon: false
                 };                            
         }
 
@@ -115,7 +117,16 @@ class App extends Component {
     });
 
     this.setState({ lights: lightsArr });
+    this.checkForWin()
 
+  }
+
+  checkForWin = () => {
+          const lightsArr = [...this.state.lights];
+          const checkIndex = lightsArr.findIndex(light => light.isLight === true);
+          if(checkIndex === -1) {
+                  this.setState({ haveWon: true })
+          }
   }
 
   restart = () => {
@@ -129,6 +140,10 @@ class App extends Component {
         
   }
 
+  closeWinDialog = () => {
+          this.setState({ haveWon: false });
+  }
+
   render() {
     return (
        <div className="App">
@@ -138,7 +153,8 @@ class App extends Component {
           <Assembly squareLen={this.props.squareLength} 
                     lightsArr={this.state.lights} 
                     clicked={this.lightHandler}/>
-           { this.state.isHowToPlay ? <HowToPlay close={this.howToPlay}/> : null } 
+           { this.state.isHowToPlay ? <HowToPlay close={this.howToPlay}/> : null }
+           { this.state.haveWon ? <YouWin closed={this.closeWinDialog}/> : null} 
        </div>
        );
   }
