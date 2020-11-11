@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App appTitle="Lights Out" squareLength={3}/>
+    <App appTitle="Lights Out" />
   </React.StrictMode>,
   document.getElementById('root')
 );

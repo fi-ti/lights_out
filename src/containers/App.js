@@ -11,10 +11,9 @@ class App extends Component {
                 super(props);
 
                 const lightsArr = [];
-                const squareLen = this.props.squareLength;
-
-                    for(let i = 0; i < squareLen; i++) {
-                        for(let j = 0; j < squareLen; j++) {
+                
+                for(let i = 0; i < 3; i++) {
+                        for(let j = 0; j < 3; j++) {
                                 lightsArr.push({ 
                                                 isLight: (Math.random() > 0.5 ? true : false ), 
                                                 id: `${i}${j}`, 
@@ -22,12 +21,14 @@ class App extends Component {
                                                });
                                 }
                         }
-                this.state = {
-                        lights: lightsArr,
-                        squareLength: this.props.squareLength,
-                        isHowToPlay: false,
-                        haveWon: false
-                };                            
+                        this.state = {
+                                lights: [...lightsArr],
+                                squareLength: 3,
+                                isHowToPlay: false,
+                                haveWon: false,
+                          };
+                           
+                                                
         }
 
   deleteLeft = (changeLightsArr, row, col) => {
@@ -125,7 +126,20 @@ class App extends Component {
           const lightsArr = [...this.state.lights];
           const checkIndex = lightsArr.findIndex(light => light.isLight === true);
           if(checkIndex === -1) {
-                  this.setState({ haveWon: true })
+                const newLightsArr = [];
+                for(let i = 0; i < this.state.squareLength + 1; i++) {
+                      for(let j = 0; j < this.state.squareLength + 1; j++) {
+                              newLightsArr.push({ 
+                                              isLight: (Math.random() > 0.5 ? true : false ), 
+                                              id: `${i}${j}`, 
+                                              coordinates: [i, j]
+                                             });
+                              }
+                      }  
+                this.setState((prevState, props) => {
+                          return {  lights: [...newLightsArr], haveWon: true, squareLength: (prevState.squareLength + 1) }
+                  })
+
           }
   }
 
@@ -141,8 +155,21 @@ class App extends Component {
   }
 
   closeWinDialog = () => {
-          this.setState({ haveWon: false });
-          this.restart();
+        this.setState({ haveWon: false });
+        this.restart();
+  }
+
+  letMeWin = () => {
+          const winArr = [...this.state.lights];
+          winArr.forEach(light => {
+                  if(light.id === "00" || light.id === "01" || light.id === "10") {
+                          light.isLight = true;
+                  } else {
+                          light.isLight = false;
+                  }
+          });
+          this.setState({ lights: winArr});
+
   }
 
   render() {
@@ -151,11 +178,12 @@ class App extends Component {
           <Cockpit title={this.props.appTitle}
                    restart={this.restart}
                    howToPlay={this.howToPlay}/>
-          <Assembly squareLen={this.props.squareLength} 
+          <Assembly squareLen={this.state.squareLength} 
                     lightsArr={this.state.lights} 
                     clicked={this.lightHandler}/>
            { this.state.isHowToPlay ? <HowToPlay close={this.howToPlay}/> : null }
            { this.state.haveWon ? <YouWin closed={this.closeWinDialog}/> : null} 
+           <button onClick={this.letMeWin}>Let me Win</button>
        </div>
        );
   }
